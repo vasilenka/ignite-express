@@ -1,0 +1,62 @@
+{
+  "name": "ignite-express",
+  "version": "0.0.1",
+  "description": "Express starter with MySQL databae and TypeORM",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "author": {
+    "name": "Ongki Herlambang",
+    "email": "ongki@herlambang.design"
+  },
+  "scripts": {
+    "build": "babel src --out-dir dist",
+    "dev": "NODE_ENV=development nodemon --exec yarn restart",
+    "restart": "rimraf dist && yarn build && node dist/index.js",
+    "start": "rimraf dist && yarn build && NODE_ENV=production node dist/index.js"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.1.0",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
+    "typeorm": "^0.2.25"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.3",
+    "@babel/core": "^7.10.3",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "@babel/plugin-proposal-decorators": "^7.10.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.10.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.10.3",
+    "@babel/preset-env": "^7.10.3",
+    "@types/dotenv": "^8.2.0",
+    "babel-loader": "^8.1.0",
+    "nodemon": "^2.0.4"
+  },
+  "browserslist": "> 0.25%, not dead",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typeorm/babel-example.git"
+  },
+  "bugs": {
+    "url": "https://github.com/typeorm/babel-example/issues"
+  },
+  "tags": [
+    "orm",
+    "babel",
+    "babel-orm",
+    "typeorm-sample",
+    "typeorm-example",
+    "api",
+    "express",
+    "node"
+  ]
+}
