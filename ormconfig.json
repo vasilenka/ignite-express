@@ -3,6 +3,11 @@
   "type": "mysql",
   "host": "34.101.184.65",
   "port": 3306,
+  "ssl": {
+    "ca": "ca.pem",
+    "key": "client-key.pem",
+    "cert": "client-cert.pem"
+  },
   "username": "development",
   "password": "bhmantansesak",
   "database": "development",
