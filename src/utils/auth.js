@@ -1,14 +1,26 @@
 import config from '../config'
 import { User } from '../resources/user/user.model'
 import jwt from 'jsonwebtoken'
+import { transporter, generateEmailHTML } from './email'
 
 export const generateToken = user => {
   return jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
+    { id: user._id, email: user.email, role: user.role },
     config.secrets.jwt,
     {
       expiresIn: config.secrets.jwtExp
     }
+  )
+}
+
+export const generateEmailTokenAndSend = async (user, callback) => {
+  return jwt.sign(
+    { id: user._id },
+    process.env.EMAIL_JWT_SECRET,
+    {
+      expiresIn: '30m'
+    },
+    callback
   )
 }
 
@@ -83,29 +95,19 @@ export const register = async (req, res) => {
   try {
     const user = await User.create(req.body)
     let userData = await user.getPublicField()
-    const token = generateToken(user)
-    return res.status(201).send({ token, data: userData })
+
+    generateEmailTokenAndSend(userData, (_, emailToken) => {
+      const url = `${process.env.EMAIL_JWT_SECRET}/${emailToken}`
+      transporter.sendMail({
+        to: userData.email,
+        subject: 'Confirm Your Email',
+        html: generateEmailHTML(url)
+      })
+    })
+
+    return res.status(201).send({ data: userData })
   } catch (e) {
     return res.status(500).json({ ERROR: e })
-  }
-}
-
-export const adminRegister = async (req, res) => {
-  try {
-    await User.create({
-      email: process.env.ADMIN_EMAIL,
-      password: process.env.ADMIN_PASSWORD,
-      name: 'Igniter',
-      username: 'igniter',
-      role: 'admin',
-      isConfirmed: true
-    })
-
-    return res.status(201).send({
-      message: 'admin account created'
-    })
-  } catch (e) {
-    return res.status(500).json(e)
   }
 }
 
@@ -261,4 +263,23 @@ export const relatedEditorOrAdmin = model => async (req, res, next) => {
   }
 
   next()
+}
+
+export const adminRegister = async (req, res) => {
+  try {
+    await User.create({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+      name: 'Igniter',
+      username: 'igniter',
+      role: 'admin',
+      isConfirmed: true
+    })
+
+    return res.status(201).send({
+      message: 'admin account created'
+    })
+  } catch (e) {
+    return res.status(500).json(e)
+  }
 }
