@@ -18,7 +18,7 @@ app.use(morgan('dev'))
 // Routes
 app.get('/', async (_, res) =>
   res.status(200).json({
-    hey: 'unoia',
+    hey: 'ignition 🔥'
   })
 )
 

@@ -7,9 +7,9 @@ export const connect = (
     useUnifiedTopology: true,
     useCreateIndex: true,
     useNewUrlParser: true,
-    useFindAndModify: false,
+    useFindAndModify: false
   }
 ) => {
-  // console.log('URL: ', url)
+  console.log('Connecting to MongoDB...')
   return mongoose.connect(url, { ...opts, useNewUrlParser: true })
 }

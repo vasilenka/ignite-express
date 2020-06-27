@@ -1,5 +1,5 @@
 {
-  "name": "express-starter",
+  "name": "ignite-express",
   "version": "0.0.1",
   "description": "Express starter with MongoDB",
   "license": "MIT",
@@ -70,14 +70,13 @@
     "url": "https://github.com/typeorm/babel-example/issues"
   },
   "tags": [
-    "orm",
-    "babel",
-    "babel-orm",
-    "typeorm-sample",
-    "typeorm-example",
     "api",
     "express",
-    "node"
+    "node",
+    "mongodb",
+    "nosql",
+    "mongoose",
+    "javascript"
   ],
   "jest": {
     "verbose": true,
