@@ -1,5 +1,4 @@
 import { User } from './user.model'
-import { crudControllers } from '../../utils/crud'
 
 export const me = (req, res) => {
   res.status(200).json({ data: req.user })
@@ -24,18 +23,52 @@ export const getAllUsers = async (req, res) => {
   }
 }
 
-export const updateMe = async (req, res) => {
+export const getUserById = async (req, res) => {
+  let user
   try {
-    const user = await User.findByIdAndUpdate(req.user._id, req.body, {
-      new: true
+    user = await User.findById(req.id)
+      .select('-password')
+      .lean()
+      .exec()
+  } catch (error) {
+    console.error('ERROR GETTING USER BY ID: ', { e })
+    return res.status(400).json({ error: e })
+  }
+
+  return res.status(201).json({ data: user })
+}
+
+export const updateMe = async () => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, req.body, {
+      new: true,
+      runValidators: true
     })
+      .select('-password')
       .lean()
       .exec()
 
-    res.status(200).json({ data: user })
+    res.status(200).json({ data: updatedUser })
   } catch (e) {
-    console.error(e)
-    res.status(400).end()
+    console.error('ERROR UPDATING USER', { e })
+    res.status(400).send(e)
+  }
+}
+
+export const updateUserWithId = async () => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    })
+      .select('-password')
+      .lean()
+      .exec()
+
+    res.status(200).json({ data: updatedUser })
+  } catch (e) {
+    console.error('ERROR UPDATING USER', { e })
+    res.status(400).send(e)
   }
 }
 
@@ -49,4 +82,19 @@ export const deleteMe = async (req, res) => {
   } catch {}
 }
 
-export default crudControllers(User)
+export const removeUserById = async (req, res) => {
+  try {
+    const removed = await User.findByIdAndRemove(req.params.id).select(
+      '-password'
+    )
+
+    if (!removed) {
+      return res.status(400).end()
+    }
+
+    return res.status(200).json({ data: removed })
+  } catch (e) {
+    console.error('ERROR REMOVING USER', { e })
+    res.status(400).send(e)
+  }
+}

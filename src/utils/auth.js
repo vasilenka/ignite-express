@@ -2,7 +2,7 @@ import config from '../config'
 import { User } from '../resources/user/user.model'
 import jwt from 'jsonwebtoken'
 
-export const newToken = user => {
+export const generateToken = user => {
   return jwt.sign(
     { id: user.id, email: user.email, role: user.role },
     config.secrets.jwt,
@@ -53,50 +53,52 @@ export const validateToken = async (req, res) => {
   res.status(200).json({ token, user })
 }
 
-export const signup = async (req, res) => {
-  if (!req.body.name || !req.body.email || !req.body.password) {
-    return res.status(400).send({ message: 'need name,email, and password' })
+export const register = async (req, res) => {
+  if (!req.body.username || !req.body.email || !req.body.password) {
+    return res
+      .status(400)
+      .send({ message: 'need username, email, and password' })
   }
 
-  if (req?.user?.role !== 'public') {
+  if (!req?.user?.role !== 'public') {
     req.body.role = 'public'
+  }
+
+  req.body.username = req.body.username.toLowerCase()
+
+  let registeredUser = await User.findOne()
+    .or([{ email: req.body.email }, { username: req.body.username }])
+    .lean()
+    .exec()
+
+  if (registeredUser) {
+    if (registeredUser.email === req.body.email) {
+      return res.status(400).send({ message: 'email already taken' })
+    }
+    if (registeredUser.username === req.body.username) {
+      return res.status(400).send({ message: 'username already taken' })
+    }
   }
 
   try {
     const user = await User.create(req.body)
     let userData = await user.getPublicField()
-    const token = newToken(user)
+    const token = generateToken(user)
     return res.status(201).send({ token, data: userData })
   } catch (e) {
     return res.status(500).json({ ERROR: e })
   }
 }
 
-export const registerEditor = async (req, res) => {
-  if (!req.body.name || !req.body.email || !req.body.password) {
-    return res.status(400).send({ message: 'need name, email, and password' })
-  }
-
-  if (req?.user?.role !== 'editor') {
-    req.body.role = 'editor'
-  }
-
-  try {
-    const user = await User.create(req.body)
-    let userData = await user.getPublicField()
-    return res.status(201).send({ data: userData })
-  } catch (e) {
-    return res.status(500).json({ ERROR: e })
-  }
-}
-
-export const adminSignup = async (req, res) => {
+export const adminRegister = async (req, res) => {
   try {
     await User.create({
       email: process.env.ADMIN_EMAIL,
       password: process.env.ADMIN_PASSWORD,
-      name: 'Super-Admin',
-      role: 'admin'
+      name: 'Igniter',
+      username: 'igniter',
+      role: 'admin',
+      isConfirmed: true
     })
 
     return res.status(201).send({
@@ -134,7 +136,7 @@ export const resetPassword = async (req, res) => {
     user.password = req.body.password
     let updatedUser = await user.save()
 
-    const token = newToken(updatedUser)
+    const token = generateToken(updatedUser)
     return res.status(200).send({
       token,
       user: {
@@ -149,7 +151,7 @@ export const resetPassword = async (req, res) => {
   }
 }
 
-export const signin = async (req, res) => {
+export const login = async (req, res) => {
   if (!req.body.email || !req.body.password) {
     return res.status(400).send({ message: 'need email and password' })
   }
@@ -171,7 +173,7 @@ export const signin = async (req, res) => {
       return res.status(401).send(invalid)
     }
 
-    const token = newToken(user)
+    const token = generateToken(user)
     return res.status(201).send({
       token,
       user: { email: user.email, role: user.role, name: user.name }
@@ -223,16 +225,6 @@ export const protect = async (req, res, next) => {
 
   req.user = user
   next()
-}
-
-export const onlyEditor = async (req, res, next) => {
-  if (req.user?.role === 'admin' || req.user?.role === 'editor') {
-    next()
-  } else {
-    return res.status(401).send({
-      message: 'access forbidden'
-    })
-  }
 }
 
 export const onlyAdmin = async (req, res, next) => {

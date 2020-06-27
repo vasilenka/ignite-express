@@ -1,24 +1,27 @@
 import { Router } from 'express'
 import userControllers, {
   updateMe,
+  updateUserWithId,
   deleteMe,
-  getAllUsers
+  getAllUsers,
+  getUserById,
+  removeUserById
 } from './user.controllers'
-import { protect, signup, onlyAdmin, resetPassword } from '../../utils/auth'
+import { protect, register, resetPassword } from '../../utils/auth'
 
 const router = Router()
 
 // router.get('/', me)
 router.get('/', getAllUsers)
-router.get('/:id', userControllers.getById)
+router.get('/:id', getUserById)
 
-router.post('/', protect, onlyAdmin, signup)
-router.put('/:id', protect, userControllers.updateOneWithId)
-router.delete('/:id', protect, userControllers.removeOneWithId)
+router.post('/', register)
 
+router.put('/:id', protect, updateUserWithId)
 router.put('/reset/:id', protect, resetPassword)
-
 router.put('/', protect, updateMe)
+
+router.delete('/:id', protect, removeUserById)
 router.delete('/', protect, deleteMe)
 
 module.exports = router
