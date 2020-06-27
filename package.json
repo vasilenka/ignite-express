@@ -1,7 +1,7 @@
 {
-  "name": "ignite-express",
+  "name": "express-starter",
   "version": "0.0.1",
-  "description": "Express starter with MySQL databae and TypeORM",
+  "description": "Express starter with MongoDB",
   "license": "MIT",
   "readmeFilename": "README.md",
   "author": {
@@ -15,21 +15,6 @@
     "start": "rimraf dist && yarn build && NODE_ENV=production node dist/index.js"
   },
   "dependencies": {
-    "axios": "^0.19.2",
-    "bcrypt": "^5.0.0",
-    "body-parser": "^1.19.0",
-    "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.15",
-    "morgan": "^1.10.0",
-    "mysql2": "^2.1.0",
-    "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2",
-    "typeorm": "^0.2.25"
-  },
-  "devDependencies": {
     "@babel/cli": "^7.10.3",
     "@babel/core": "^7.10.3",
     "@babel/plugin-proposal-class-properties": "^7.10.1",
@@ -38,8 +23,43 @@
     "@babel/plugin-proposal-optional-chaining": "^7.10.3",
     "@babel/preset-env": "^7.10.3",
     "@types/dotenv": "^8.2.0",
+    "axios": "^0.19.2",
+    "babel-eslint": "^8.2.1",
+    "babel-jest": "^23.4.2",
     "babel-loader": "^8.1.0",
-    "nodemon": "^2.0.4"
+    "bcrypt": "^5.0.0",
+    "cors": "^2.8.5",
+    "cuid": "^2.1.4",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.9.20",
+    "morgan": "^1.10.0",
+    "multer-cloud-storage": "^2.3.0",
+    "mysql2": "^2.1.0",
+    "nodemon": "^2.0.4",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
+    "typeorm": "^0.2.25",
+    "validator": "^10.9.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.15.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jest": "^21.15.1",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-prettier": "^2.6.2",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "jest": "^23.6.0",
+    "mock-req-res": "^1.0.2",
+    "prettier": "^1.15.2",
+    "supertest": "^3.3.0"
   },
   "browserslist": "> 0.25%, not dead",
   "repository": {
@@ -58,5 +78,18 @@
     "api",
     "express",
     "node"
-  ]
+  ],
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/",
+    "testEnvironment": "node",
+    "setupTestFrameworkScriptFile": "<rootDir>/test-db-setup.js",
+    "testPathIgnorePatterns": [
+      "dist/"
+    ],
+    "restoreMocks": true
+  },
+  "engines": {
+    "node": "13.11.0"
+  }
 }
