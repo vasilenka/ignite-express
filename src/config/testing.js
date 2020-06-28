@@ -1,6 +1,6 @@
 export const testConfig = {
   secrets: {
-    jwt: process.env.TESTING_JWT_SECRET
+    jwt: process.env.JWT_ACCESS_TOKEN_SECRET
   },
   dbUrl: process.env.TESTING_MONGO_URL
 }

@@ -6,9 +6,9 @@ import { transporter, generateEmailHTML } from './email'
 export const generateToken = user => {
   return jwt.sign(
     { id: user._id, email: user.email, role: user.role },
-    config.secrets.jwt,
+    config.secrets.accessToken,
     {
-      expiresIn: config.secrets.jwtExp
+      expiresIn: config.secrets.accessTokenExp
     }
   )
 }
@@ -16,9 +16,9 @@ export const generateToken = user => {
 export const generateEmailTokenAndSend = async (user, callback) => {
   return jwt.sign(
     { id: user._id },
-    process.env.EMAIL_JWT_SECRET,
+    config.secrets.emailToken,
     {
-      expiresIn: '30m'
+      expiresIn: config.secrets.emailTokenExp
     },
     callback
   )
@@ -26,7 +26,7 @@ export const generateEmailTokenAndSend = async (user, callback) => {
 
 export const verifyToken = token =>
   new Promise((resolve, reject) => {
-    jwt.verify(token, config.secrets.jwt, (err, payload) => {
+    jwt.verify(token, config.secrets.accessToken, (err, payload) => {
       if (err) return reject(err)
       resolve(payload)
     })
@@ -97,7 +97,7 @@ export const register = async (req, res) => {
     let userData = await user.getPublicField()
 
     generateEmailTokenAndSend(userData, (_, emailToken) => {
-      const url = `${process.env.EMAIL_JWT_SECRET}/${emailToken}`
+      const url = `${config.email.redirect}/${emailToken}`
       transporter.sendMail({
         to: userData.email,
         subject: 'Confirm Your Email',

@@ -1,16 +1,15 @@
 import nodemailer from 'nodemailer'
+import config from '../config'
 
 // When using gmail, you need to allow 'Less Secure App'
 // or else nodemailer can't sign-in to your account to send email
 // https://myaccount.google.com/u/0/lesssecureapps?pageId=none
-
 export const transporter = nodemailer.createTransport({
-  // name: process.env.EMAIL_NAME,
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
+  host: config.email.host,
+  port: config.email.port,
   auth: {
-    user: process.env.EMAIL_USERNAME,
-    pass: process.env.EMAIL_PASSWORD
+    user: config.email.username,
+    pass: config.email.password
   },
   secure: true,
   debug: true,

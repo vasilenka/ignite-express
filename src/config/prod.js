@@ -1,6 +1,6 @@
 export const prodConfig = {
   secrets: {
-    jwt: process.env.PRODUCTION_JWT_SECRET
+    jwt: process.env.JWT_ACCESS_TOKEN_SECRET
   },
   dbUrl: process.env.PRODUCTION_MONGO_URL
 }

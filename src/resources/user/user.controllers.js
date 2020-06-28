@@ -1,4 +1,5 @@
 import { User } from './user.model'
+import { compareSync } from 'bcrypt'
 
 export const me = (req, res) => {
   res.status(200).json({ data: req.user })
@@ -15,6 +16,10 @@ export const getAllUsers = async (req, res) => {
       .select('-password')
       .lean()
       .exec()
+
+    if (req.cookies) {
+      console.log('🍪', req.cookies)
+    }
 
     return res.status(201).send({ data: users })
   } catch (error) {
